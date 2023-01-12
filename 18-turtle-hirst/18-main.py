@@ -89,9 +89,6 @@ hirst_image(turtle, 5, colorscheme)
 # dashed_line(100, turtle)
 # turtle.right(90)
 
-
-
-
 screen = Screen()
 screen.exitonclick()
 

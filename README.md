@@ -1,1 +1,1 @@
-# udemy-100-days-of-code
+# Udemy 100 Days of Code - Python
