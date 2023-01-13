@@ -2,11 +2,11 @@ from turtle import Turtle
 
 
 class MySnake:
-    def __init__(self, space):
+    def __init__(self, space, len):
         self.snake = []
         self.x_boundary = (space[0] / 2) - 20
         self.y_boundary = (space[1] / 2) - 20
-        for index in range(3):
+        for index in range(len):
             segment = Turtle(shape='square')
             segment.color('white')
             segment.penup()
@@ -20,8 +20,8 @@ class MySnake:
         self.snake[0].setheading(90)
         self.snake[0].forward(20)
         for index in range(len(self.snake)-1, 0, -1):
-            self.snake[index].setheading(self.snake[index-1].heading())
             self.snake[index].forward(20)
+            self.snake[index].setheading(self.snake[index-1].heading())
 
     def detect_wall(self):
         if self.snake[0].xcor() > self.x_boundary or self.snake[0].xcor() < -self.x_boundary:
