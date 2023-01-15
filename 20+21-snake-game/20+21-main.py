@@ -25,19 +25,13 @@ playspace = (600, 600)
 # bot.goto((0, -playspace[1]/2+30))
 #s = MySnake(playspace, 6)
 
-s = Screen()
-s.listen()
-g = GameBrain(s)
+g = GameBrain()
 #s.onkey(key='a', fun=g.head_west)
-game_running = True
-while game_running:
-    # s.step_forward()
-    # time.sleep(1/diff)
-    game_running = g.run()
+# game_running = True
+# while game_running:
+#     # s.step_forward()
+#     # time.sleep(1/diff)
+#     game_running =
 
-
-
-
-s.exitonclick()
 
 
