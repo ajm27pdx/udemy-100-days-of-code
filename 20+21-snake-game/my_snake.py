@@ -4,6 +4,7 @@ SOUTH = 270
 WEST = 180
 EAST = 0
 
+
 class MySnake:
     def __init__(self, size):
         self.snake = []
@@ -22,28 +23,32 @@ class MySnake:
     def snake_head_pos(self):
         return self.head.pos()
 
-    def step_forward(self):
-        self.head.forward(20)
+    def step_forward(self, add_segment):
+        if add_segment:
+            new_segment = self.snake[-1].clone()
         for index in range(len(self.snake)-1, 0, -1):
-            self.snake[index].forward(20)
+            self.snake[index].goto(self.snake[index-1].pos())
             self.snake[index].setheading(self.snake[index-1].heading())
+        self.head.forward(20)
+        if add_segment:
+            self.snake.append(new_segment)
+
+    def add_segment(self):
+        segment = self.snake[-1].clone()
+        self.snake.append(segment)
 
     def head_w(self):
         if self.head.heading() != EAST:
             self.head.setheading(WEST)
-        print('west')
 
     def head_n(self):
         if self.head.heading() != SOUTH:
             self.head.setheading(NORTH)
-        print('north')
 
     def head_s(self):
         if self.head.heading() != NORTH:
             self.head.setheading(SOUTH)
-        print('south')
 
     def head_e(self):
         if self.head.heading() != WEST:
             self.head.setheading(EAST)
-        print('east')
