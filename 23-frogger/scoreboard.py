@@ -12,7 +12,16 @@ class Scoreboard(Turtle):
         self.color('black')
         self.write(f'Level: {self.level}', font=FONT)
 
-    def level_up(self):
-        self.level += 1
+    def set_level(self, rec_level):
+        self.level = rec_level
         self.clear()
         self.write(f'Level: {self.level}', font=FONT)
+
+    def kill_screen(self):
+        self.goto(0,0)
+        self.write(f'Game Over', align='center', font=FONT)
+
+    def clear_killscreen(self):
+        self.clear()
+        self.goto(-260, 260)
+        self.set_level(1)
