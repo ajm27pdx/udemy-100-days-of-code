@@ -8,14 +8,16 @@ EAST = 0
 class MySnake:
     def __init__(self, size):
         self.snake = []
+        self.create_snake(size)
+        self.head = self.snake[0]
 
+    def create_snake(self, size):
         for index in range(size):
             segment = Turtle(shape='square')
             segment.color('white')
             segment.penup()
             segment.goto(x=0-(index * 20), y=0)
             self.snake.append(segment)
-        self.head = self.snake[0]
 
     def snake_length(self):
         print(len(self.snake))
@@ -52,3 +54,10 @@ class MySnake:
     def head_e(self):
         if self.head.heading() != WEST:
             self.head.setheading(EAST)
+
+    def reset_snake(self):
+        for segment in self.snake:
+            segment.goto(1000, 1000)
+        self.snake.clear()
+        self.create_snake(3)
+        self.head = self.snake[0]
