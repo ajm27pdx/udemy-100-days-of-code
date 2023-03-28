@@ -10,11 +10,13 @@ FONT = ('Courier', 18, 'normal')
 class GameBrain:
     def __init__(self, screen=turtle.Screen(), area=(600, 600), diff=10):
         self.score = 0
-        self.high_score = 0
+        with open('data.txt', mode='r') as file:
+            self.high_score = int(file.read())
         self.init_diff = diff
         self.diff = diff
         self.diff_scale = 0.3
         self.area = area
+        self.kill_screen = False
         self.x_boundary = int((self.area[0] / 2) - 20)
         self.y_boundary = int((self.area[1] / 2) - 20)
         self.s = screen
@@ -24,6 +26,7 @@ class GameBrain:
         self.init_screen()
         self.t = turtle.Turtle()
         self.b = turtle.Turtle()
+        self.c = turtle.Turtle()
         self.init_text()
         self.food = Food(x_loc=self.x_boundary, y_loc=self.y_boundary)
         self.run()
@@ -38,6 +41,10 @@ class GameBrain:
         self.b.ht()
         self.t.goto(0, self.area[1] / 2 - 30)
         self.b.goto(0, -self.area[1] / 2 + 30)
+        self.c.color('white')
+        self.c.penup()
+        self.c.ht()
+        self.c.goto(0, 0)
 
     def init_screen(self):
         self.s.setup(width=self.area[0], height=self.area[1])
@@ -60,27 +67,29 @@ class GameBrain:
         while game_continue:
             self.snake.step_forward(add_segment)
             add_segment = False
-            game_continue = self.detect_wall() and self.detect_tail()
+            self.kill_screen = self.detect_wall() or self.detect_tail()
             time.sleep(1/self.diff)
             self.update_text()
             add_segment = self.detect_food()
             self.s.update()
+            while self.kill_screen:
+                self.show_kill_screen()
 
     def detect_wall(self):
         if self.snake.snake_head_pos()[0] > self.x_boundary or self.snake.snake_head_pos()[0] < -self.x_boundary:
             # print(f'wall collision at {self.snake.snake_head_pos()}')
-            return False
+            return True
         if self.snake.snake_head_pos()[1] > self.y_boundary or self.snake.snake_head_pos()[1] < -self.y_boundary:
             # print(f'wall collision at {self.snake.snake_head_pos()}')
-            return False
+            return True
 
-        return True
+        return False
 
     def detect_tail(self):
         for segment in self.snake.snake:
             if segment != self.snake.head and self.snake.head.distance(segment) < 10:
-                return False
-        return True
+                return True
+        return False
 
     def detect_food(self):
         if self.snake.snake[0].distance(self.food) < 15:
@@ -97,14 +106,26 @@ class GameBrain:
         self.t.clear()
         self.t.write(f'Score: {self.score}', align=ALIGN, font=FONT)
         self.b.clear()
-        self.b.write(f'Debug\nSnake Head - {self.snake.head.pos()}\nFood - {self.food.pos()}\n'
-                     f'Diff - {self.diff:0.1f}\nHeading - {self.snake.head.heading():0.0f}', align=ALIGN, font=FONT)
+        self.b.write(f'High Score: {self.high_score}', align=ALIGN, font=FONT)
+        self.c.clear()
+
+        #self.b.write(f'Debug\nSnake Head - {self.snake.head.pos()}\nFood - {self.food.pos()}\n'
+        #             f'Diff - {self.diff:0.1f}\nHeading - {self.snake.head.heading():0.0f}', align=ALIGN, font=FONT)
 
     def reset(self):
-        pass
         # TODO: Reset Screen
+        self.snake.reset_snake()
+        self.kill_screen = False
 
-    def kill_screen(self):
-        pass
+    def show_kill_screen(self):
+        if self.high_score < self.score:
+            self.high_score = self.score
+            self.b.clear()
+            self.b.write(f'New High Score! {self.high_score}', align=ALIGN, font=FONT)
+            with open('data.txt', mode='w') as file:
+                file.write(f'{self.high_score}')
+        self.score = 0
+        self.c.clear()
+        self.c.write(f'Press [R] to reset', align=ALIGN, font=FONT)
         # TODO: Kill Screen
 
