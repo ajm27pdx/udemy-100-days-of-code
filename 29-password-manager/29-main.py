@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from random import randint, choice, shuffle
 import pyperclip
+import json
 DEFAULT_USERNAME = 'ajm27'
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -29,24 +30,31 @@ def save():
     website = website_entry.get()
     username = username_entry.get()
     password = password_entry.get()
+    new_data = {website: {username: password}}
+    global data
     # Validate Data
     if website == '' or username == '' or password == '':
         messagebox.showerror(title='Error', message='All fields are required!')
     else:
-        data_valid = messagebox.askokcancel(title=website, message=f'You entered\nUsername: {username}'
-                                                                   f'\nPassword: {password}\nSave?')
+        try:
+            data_file = open('data.json', 'r')
+        except FileNotFoundError:
+            data = new_data
+        else:
+            data = json.load(data_file)
+            data.update(new_data)
+        finally:
+            data_file = open('data.json', 'w')
+            json.dump(data, data_file, indent=4)
+            data_file.close()
     # Save Data to File
-    if data_valid:
-        out_string = f'{website} | {username} | {password}\n'
-        with open('data.txt', mode='a') as f:
-            f.write(out_string)
-        pyperclip.copy(password)
-        messagebox.showinfo(title='Password Saved!', message='Password saved to database and copied to clipboard!')
+    pyperclip.copy(password)
+    messagebox.showinfo(title='Password Saved!', message='Password saved to database and copied to clipboard!')
     # Reset Form
-        website_entry.delete(0, END)
-        username_entry.delete(0, END)
-        username_entry.insert(0, DEFAULT_USERNAME)
-        password_entry.delete(0, END)
+    website_entry.delete(0, END)
+    username_entry.delete(0, END)
+    username_entry.insert(0, DEFAULT_USERNAME)
+    password_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
