@@ -1,10 +1,12 @@
 import requests
 
 parameters = {
-    'amount': 10,
-    'type': 'boolean',
+    'lat': 45.5202471,
+    'lon': -122.674194,
+    'appid': 'b46251243caf85f31844ccabb8be9891',
+    'exclude': 'current,minutely,daily'
 }
-
-response = requests.get('https://opentdb.com/api.php', params=parameters)
+#https://api.openweathermap.org/data/2.8/onecall?lat=45.5202471&lon=-122.674194&appid=b46251243caf85f31844ccabb8be9891
+response = requests.get('https://api.openweathermap.org/data/2.8/onecall', params=parameters)
 response.raise_for_status()
-question_data = response.json()['results']
+weather_data = response.json()
